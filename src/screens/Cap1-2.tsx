@@ -8,6 +8,10 @@ import {
     StatusBar,
     Pressable
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native';
+
+
 
 // --- Constantes das Imagens (Atualizadas) ---
 // 1. Fundo atualizado para 'neonm1.jpg'
@@ -24,27 +28,20 @@ const introDialogues = [
     "O que me diz, Coder? Pronto(a) para começar a sua ascensão?" // 3
 ];
 // ---------------------
-
 // Nome do componente alterado para evitar conflito
 const ArcanumIntroScreen: React.FC = () => {
     const [dialogueIndex, setDialogueIndex] = useState(0);
-
-    // 3. Lógica de piscar e 'useEffect' REMOVIDOS
+    const navigation = useNavigation();
 
     const handleScreenPress = () => {
         const nextIndex = dialogueIndex + 1;
 
-        // Se o diálogo tiver terminado
         if (nextIndex >= introDialogues.length) {
             console.log("Fim do diálogo de introdução! Navegando para a Missão 1...");
-            // Aqui você colocaria sua lógica de navegação (ex: navigation.navigate('Mission1'))
             return; 
         }
 
-        // Avança para a próxima fala
         setDialogueIndex(nextIndex);
-
-        // 4. Lógica de trocar imagem e piscar REMOVIDA
     };
 
     return (
@@ -52,26 +49,33 @@ const ArcanumIntroScreen: React.FC = () => {
             <StatusBar barStyle="light-content" />
 
             <Pressable style={styles.overlay} onPress={handleScreenPress}>
-
-                {/* 5. Overlay vermelho de piscar REMOVIDO */}
-
                 <View style={styles.avatarContainer}>
                     <Image
-                        source={lexiAvatarImage} // 6. Imagem agora é fixa
+                        source={lexiAvatarImage}
                         style={styles.avatar}
                     />
                 </View>
 
                 <View style={styles.dialogContainer}>
                     <Text style={styles.dialogText}>
-                        {introDialogues[dialogueIndex]} {/* Usando o novo array de falas */}
+                        {introDialogues[dialogueIndex]}
                     </Text>
                 </View>
-
             </Pressable>
+
+            {dialogueIndex === introDialogues.length - 1 && (
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => navigation.navigate('Mission1')}
+                >
+                    <Text style={styles.buttonText}>Começar</Text>
+                </TouchableOpacity>
+            )}
         </ImageBackground>
     );
-};
+}; // <-- ESSA CHAVE E PONTO E VÍRGULA ESTÃO FALTANDO
+
+
 
 const styles = StyleSheet.create({
     background: {
@@ -123,7 +127,24 @@ const styles = StyleSheet.create({
         textShadowColor: 'rgba(0, 0, 0, 0.5)',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2,
-    }
+    },
+    button: {
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 25,
+    backgroundColor: 'rgba(0, 255, 255, 0.2)',
+    borderColor: '#00FFFF',
+    borderWidth: 2,
+    borderRadius: 20,
+    alignSelf: 'center',
+},
+buttonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+},
+
 });
 
 // Exporta o novo componente
